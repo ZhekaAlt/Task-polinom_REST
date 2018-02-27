@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace REST_polynomials.Model
 {
-    public class Polinom : Interfaces.IShouldSaveAsTxt
+    public class Polinom
     {
         private Double _variable;
 
@@ -25,17 +25,24 @@ namespace REST_polynomials.Model
 
         public List<PolinomItem> items;
 
-        public string SaveAsTxt()
+        public int freeConstant { get; set; }
+
+        public override string ToString()
         {
             string result="";
 
-            if (items != null)
+            if (items != null && items.Count>0)
             {
                 foreach (var e in items)
                 {
-                    result = string.Concat(result, e.ToString());
+                    result = string.Concat(result, e.Sign, e.ToString());
                 }
+
+                result = string.Concat(result, freeConstant>-1?"+":"",freeConstant);
             }
+
+            if (result.FirstOrDefault() == '+')
+                result = result.Substring(1);
             return result;
         }
 

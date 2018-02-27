@@ -99,7 +99,6 @@
     <Compile Include="Model\PolinomItem.cs" />
     <Compile Include="PolinomManipulator.cs" />
     <Compile Include="ServiceContract\IPolinomService.cs" />
-    <Compile Include="Interfaces\IShouldSaveAsTxt.cs" />
     <Compile Include="PolinomService.svc.cs">
       <DependentUpon>PolinomService.svc</DependentUpon>
     </Compile>
@@ -108,6 +107,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="DataContract\" />
+    <Folder Include="Interfaces\" />
     <Folder Include="ServiceImpl\" />
   </ItemGroup>
   <ItemGroup>

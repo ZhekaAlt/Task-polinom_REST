@@ -1,4 +1,3 @@
-H:\DEV\REST_polynomials\REST_polynomials\obj\Debug\REST_polynomials.csprojResolveAssemblyReference.cache
 H:\DEV\REST_polynomials\REST_polynomials\bin\ApplicationInsights.config
 H:\DEV\REST_polynomials\REST_polynomials\bin\REST_polynomials.dll.config
 H:\DEV\REST_polynomials\REST_polynomials\bin\REST_polynomials.dll

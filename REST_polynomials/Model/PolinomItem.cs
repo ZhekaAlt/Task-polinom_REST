@@ -11,24 +11,54 @@ namespace REST_polynomials.Model
 
         private int _degree;
 
-        private bool _sign;
+        public string Sign
+        {
+            get
+            {
+                return Constant >= 0 ? "+" : ""; 
+            }
+        }
+
+        public int Constant
+        {
+            get
+            {
+                return _constant;
+            }
+
+            set
+            {
+                _constant = value;
+            }
+        }
+
+        public int Degree
+        {
+            get
+            {
+                return _degree;
+            }
+
+            set
+            {
+                _degree = value;
+            }
+        }
 
         public PolinomItem(int constantNumber, int degreeNumber)
         {
-            _constant = constantNumber;
-            _degree = degreeNumber;
-
+            Constant = constantNumber;
+            Degree = degreeNumber;
 
         }
 
-        private void determinateSign()
+        public string ToString(string variable=null)
         {
-            _sign=_constant < 0 ? false : true;
+            if (variable == null)
+                variable = "X";
+
+            return string.Format("{0}{1}{2}", Constant, variable, Degree );
         }
 
-        public string ToString(double variable)
-        {
-            return string.Format("{0}{1}{2}",_constant, variable, _degree );
-        }
     }
 }

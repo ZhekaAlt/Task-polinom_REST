@@ -20,6 +20,7 @@ namespace REST_polynomials
         string Generate(string minutes);
 
         [OperationContract]
+        [WebGet]
         string Evaluate();
     }
 }

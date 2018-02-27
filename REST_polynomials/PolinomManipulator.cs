@@ -1,5 +1,7 @@
-﻿using System;
+﻿using REST_polynomials.Model;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 
@@ -7,6 +9,102 @@ namespace REST_polynomials
 {
     public class PolinomManipulator
     {
+        private string pathDir;
 
+        private string fileName;
+
+        public PolinomManipulator()
+        {
+            fileName = "polinom.txt";
+
+            string pathDir = string.Empty;
+
+            System.Configuration.Configuration Config = System.Web.Configuration.WebConfigurationManager.OpenWebConfiguration(null);
+            if (Config.AppSettings.Settings.Count > 0)
+            {
+                System.Configuration.KeyValueConfigurationElement dirSetting = Config.AppSettings.Settings["DestinationDir"];
+                if (dirSetting != null)
+                    pathDir = dirSetting.ToString();
+                else
+                    Console.WriteLine("No DestinationDir setting  in web.config");
+            }
+
+        }
+
+        public double getEvaluationForPolinom(Polinom polinom, double variable)
+        {
+            double result = polinom.freeConstant;
+
+            foreach(var item in polinom.items)
+            {
+                result += item.Constant*(Math.Pow(variable, item.Degree));
+            }
+
+            return result;
+        }
+
+
+        #region Work with file
+        public void SaveAsTxt(Polinom polinom)
+        {            
+            fileName = getFileName(string.Format("{0}\\{1}", pathDir, fileName));
+
+            File.WriteAllText(fileName, polinom.ToString());
+        }
+
+        public string getFileName(string filePath)
+        {
+            int count = 0;
+            
+            //find
+            while (File.Exists(filePath))
+            {
+                filePath = filePath + "(" + count.ToString() + ").txt";
+                count++;
+            }
+            return filePath;
+        }
+
+        private string prepareFileContent(Polinom polinom)
+        {
+            string result = string.Empty;
+
+            foreach (var item in polinom.items)
+            {
+                result += string.Format(";{0};", item);
+            }
+
+            return result+=polinom.freeConstant.ToString();
+        }
+
+        public List<Polinom> GetDataFromFileStorage()
+        {
+            var polinoms = new List<Polinom>();
+
+            foreach(var file in Directory.GetFiles(pathDir))
+            {
+                var tmpPolinom = new Polinom();
+
+                string fileContent = File.ReadAllText(file);
+
+                if (fileContent.Length == 0)
+                    continue;
+
+                var splitedData = fileContent.Split(';').ToList();
+                tmpPolinom.freeConstant = int.Parse(splitedData.Last());
+
+                splitedData.Remove(splitedData.Last());
+                
+                foreach (var strItem in splitedData)
+                {
+                    string[] strPair = strItem.Split('X');
+                    tmpPolinom.items.Add(new PolinomItem(int.Parse(strPair[0]), int.Parse(strPair[1])));    
+                }
+                polinoms.Add(tmpPolinom);
+            }
+
+            return polinoms;
+        }
+        #endregion
     }
 }
