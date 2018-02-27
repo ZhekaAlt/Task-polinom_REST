@@ -16,3 +16,4 @@ H:\DEV\REST_polynomials\REST_polynomials\bin\Microsoft.AI.WindowsServer.xml
 H:\DEV\REST_polynomials\REST_polynomials\bin\Microsoft.ApplicationInsights.xml
 H:\DEV\REST_polynomials\REST_polynomials\obj\Debug\REST_polynomials.dll
 H:\DEV\REST_polynomials\REST_polynomials\obj\Debug\REST_polynomials.pdb
+H:\DEV\REST_polynomials\REST_polynomials\obj\Debug\REST_polynomials.csprojResolveAssemblyReference.cache

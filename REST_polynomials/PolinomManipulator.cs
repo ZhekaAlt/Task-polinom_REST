@@ -1,6 +1,7 @@
 ﻿using REST_polynomials.Model;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -19,14 +20,11 @@ namespace REST_polynomials
 
             string pathDir = string.Empty;
 
-            System.Configuration.Configuration Config = System.Web.Configuration.WebConfigurationManager.OpenWebConfiguration(null);
-            if (Config.AppSettings.Settings.Count > 0)
+            pathDir=ConfigurationManager.AppSettings["DestinationDir"];
+           
+            if (pathDir==string.Empty)
             {
-                System.Configuration.KeyValueConfigurationElement dirSetting = Config.AppSettings.Settings["DestinationDir"];
-                if (dirSetting != null)
-                    pathDir = dirSetting.ToString();
-                else
-                    Console.WriteLine("No DestinationDir setting  in web.config");
+                Console.WriteLine("No DestinationDir setting  in web.config");
             }
 
         }
@@ -49,7 +47,7 @@ namespace REST_polynomials
         {            
             fileName = getFileName(string.Format("{0}\\{1}", pathDir, fileName));
 
-            File.WriteAllText(fileName, polinom.ToString());
+            File.WriteAllText(fileName, prepareFileContent(polinom));
         }
 
         public string getFileName(string filePath)
