@@ -12,15 +12,11 @@ namespace REST_polynomials
     public interface IPolinomService
     {
         [OperationContract]
-        //[WebInvoke(Method = "GET",
-        //    ResponseFormat = WebMessageFormat.Json,
-        //    BodyStyle = WebMessageBodyStyle.Wrapped,
-        //    UriTemplate = "generate/{minutes}")]
         [WebGet]
         string Generate(string minutes);
 
         [OperationContract]
         [WebGet]
-        string Evaluate();
+        string Evaluate(string value);
     }
 }

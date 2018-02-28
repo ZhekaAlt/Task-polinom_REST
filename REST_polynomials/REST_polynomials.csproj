@@ -92,9 +92,12 @@
     <Content Include="PolinomService.svc" />
     <Content Include="scripts\ai.0.22.9-build00167.js" />
     <Content Include="scripts\ai.0.22.9-build00167.min.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataLayer\FileLayer.cs" />
     <Compile Include="Model\Polinom.cs" />
     <Compile Include="Model\PolinomItem.cs" />
     <Compile Include="PolinomManipulator.cs" />
@@ -105,8 +108,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
-    <Folder Include="DataContract\" />
+    <Folder Include="Helpers\" />
     <Folder Include="Interfaces\" />
     <Folder Include="ServiceImpl\" />
   </ItemGroup>

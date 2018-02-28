@@ -8,18 +8,18 @@ namespace REST_polynomials.Model
 {
     public class Polinom
     {
-        private Double _variable;
+        private Double _evalue;
 
-        public double Variable
+        public double EvaluatedResult
         {
             get
             {
-                return _variable;
+                return _evalue;
             }
 
             set
             {
-                _variable = value;
+                _evalue = value;
             }
         }
 

@@ -1,32 +1,77 @@
-﻿using REST_polynomials.Model;
+﻿using REST_polynomials.DataLayer;
+using REST_polynomials.Model;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.IO;
 using System.Linq;
-using System.Web;
 
 namespace REST_polynomials
 {
     public class PolinomManipulator
-    {
-        private string pathDir;
-
-        private string fileName;
+    {       
+        private FileLayer _data;
 
         public PolinomManipulator()
         {
-            fileName = "polinom.txt";
+            _data = new FileLayer();
+        }
 
-            string pathDir = string.Empty;
+        public string Generate(string minutes)
+        {
 
-            pathDir=ConfigurationManager.AppSettings["DestinationDir"];
-           
-            if (pathDir==string.Empty)
+            int membersCount = new Random().Next(0, 11);
+
+            int duration = 0;
+            int.TryParse(minutes, out duration);
+
+            string result;
+
+            var polinom = new Polinom();
+            polinom.items = new List<PolinomItem>();
+            polinom.freeConstant = new Random().Next(-200, 201);
+
+            for (int i = 0; i <= membersCount; i++)
             {
-                Console.WriteLine("No DestinationDir setting  in web.config");
+                Random randConstant = new Random(DateTime.Now.Millisecond + i);
+                Random randDegree = new Random(DateTime.Now.Millisecond + 1 + i);
+
+                var polinomItem = new PolinomItem(
+                    randConstant.Next(-10, 11),
+                    randDegree.Next(0, 11)
+                    );
+
+                polinom.items.Add(polinomItem);
             }
 
+            result = "Generated polinom: " + polinom.ToString();
+
+            _data.SaveAsTxt(polinom);
+
+            return string.Format("You called Generation service method on {0} minutes...{1}{2}", minutes, Environment.NewLine, result);
+        }
+
+        public string Evaluate(string strValue)
+        {
+            double value;
+
+            if (!double.TryParse(strValue, out value))
+            {
+                throw new Exception("Incorrect value passed. Value should be valid double.");
+            }
+
+            var polinoms = _data.GetDataFromFileStorage();
+
+            if (polinoms.Count == 0)
+            {
+                throw new Exception("There is no generated polinoms!");
+            }          
+
+            foreach(var e in polinoms)
+            {
+                e.EvaluatedResult = getEvaluationForPolinom(e, value);
+            }
+
+            return polinoms.OrderByDescending(p => p.EvaluatedResult).FirstOrDefault().ToString();                
         }
 
         public double getEvaluationForPolinom(Polinom polinom, double variable)
@@ -42,67 +87,6 @@ namespace REST_polynomials
         }
 
 
-        #region Work with file
-        public void SaveAsTxt(Polinom polinom)
-        {            
-            fileName = getFileName(string.Format("{0}\\{1}", pathDir, fileName));
-
-            File.WriteAllText(fileName, prepareFileContent(polinom));
-        }
-
-        public string getFileName(string filePath)
-        {
-            int count = 0;
-            
-            //find
-            while (File.Exists(filePath))
-            {
-                filePath = filePath + "(" + count.ToString() + ").txt";
-                count++;
-            }
-            return filePath;
-        }
-
-        private string prepareFileContent(Polinom polinom)
-        {
-            string result = string.Empty;
-
-            foreach (var item in polinom.items)
-            {
-                result += string.Format(";{0};", item);
-            }
-
-            return result+=polinom.freeConstant.ToString();
-        }
-
-        public List<Polinom> GetDataFromFileStorage()
-        {
-            var polinoms = new List<Polinom>();
-
-            foreach(var file in Directory.GetFiles(pathDir))
-            {
-                var tmpPolinom = new Polinom();
-
-                string fileContent = File.ReadAllText(file);
-
-                if (fileContent.Length == 0)
-                    continue;
-
-                var splitedData = fileContent.Split(';').ToList();
-                tmpPolinom.freeConstant = int.Parse(splitedData.Last());
-
-                splitedData.Remove(splitedData.Last());
-                
-                foreach (var strItem in splitedData)
-                {
-                    string[] strPair = strItem.Split('X');
-                    tmpPolinom.items.Add(new PolinomItem(int.Parse(strPair[0]), int.Parse(strPair[1])));    
-                }
-                polinoms.Add(tmpPolinom);
-            }
-
-            return polinoms;
-        }
-        #endregion
+      
     }
 }
