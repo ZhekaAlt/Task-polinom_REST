@@ -20,9 +20,9 @@ namespace REST_polynomials.DataLayer
 
         private void Initialize()
         {
-            fileName = "polinom.txt";
+            fileName = "polinom";
 
-            string pathDir = string.Empty;
+            pathDir = string.Empty;
 
             pathDir = System.Configuration.ConfigurationManager.AppSettings["DestinationDir"];
 
@@ -34,6 +34,9 @@ namespace REST_polynomials.DataLayer
 
         public void SaveAsTxt(Polinom polinom)
         {
+            if (!new DirectoryInfo(pathDir).Exists)
+                Directory.CreateDirectory(pathDir);
+
             fileName = getFileName(string.Format("{0}\\{1}", pathDir, fileName));
 
             File.WriteAllText(fileName, prepareFileContent(polinom));
@@ -43,13 +46,15 @@ namespace REST_polynomials.DataLayer
         {
             int count = 0;
 
+            string initialPath = filePath;
+
             //find
-            while (File.Exists(filePath))
+            while (File.Exists(filePath + ".txt"))
             {
-                filePath = filePath + "(" + count.ToString() + ").txt";
+                filePath = initialPath + "(" + count.ToString() + ")";
                 count++;
             }
-            return filePath;
+            return filePath+".txt";
         }
 
         private string prepareFileContent(Polinom polinom)
@@ -58,7 +63,7 @@ namespace REST_polynomials.DataLayer
 
             foreach (var item in polinom.items)
             {
-                result += string.Format(";{0};", item);
+                result += string.Format("{0};", item.ToString());
             }
 
             return result += polinom.freeConstant.ToString();

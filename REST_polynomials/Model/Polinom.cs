@@ -22,6 +22,10 @@ namespace REST_polynomials.Model
                 _evalue = value;
             }
         }
+        public Polinom()
+        {
+            items = new List<Model.PolinomItem>();
+        }
 
         public List<PolinomItem> items;
 

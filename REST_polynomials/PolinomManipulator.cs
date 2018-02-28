@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Threading;
 
 namespace REST_polynomials
 {
@@ -11,14 +12,24 @@ namespace REST_polynomials
     {       
         private FileLayer _data;
 
+        private Thread generationThread, evaluationThread;
+
         public PolinomManipulator()
         {
             _data = new FileLayer();
         }
 
+        public string startPolinomGeneration(string minutes)
+        {
+            if (generationThread.ThreadState == ThreadState.Running)
+                return "Generation is in progress. Please wait...";
+
+            generationThread = new Thread(Generate);
+            generationThread.Start();
+        }
+
         public string Generate(string minutes)
         {
-
             int membersCount = new Random().Next(0, 11);
 
             int duration = 0;
@@ -50,20 +61,25 @@ namespace REST_polynomials
             return string.Format("You called Generation service method on {0} minutes...{1}{2}", minutes, Environment.NewLine, result);
         }
 
+        public string polinomGeneration(string minutes)
+        {
+
+        }
+
         public string Evaluate(string strValue)
         {
             double value;
 
             if (!double.TryParse(strValue, out value))
             {
-                throw new Exception("Incorrect value passed. Value should be valid double.");
+               return "Error! Incorrect value passed. Value should be valid double.";
             }
 
             var polinoms = _data.GetDataFromFileStorage();
 
             if (polinoms.Count == 0)
             {
-                throw new Exception("There is no generated polinoms!");
+                return "Error! There is no generated polinoms!";
             }          
 
             foreach(var e in polinoms)
