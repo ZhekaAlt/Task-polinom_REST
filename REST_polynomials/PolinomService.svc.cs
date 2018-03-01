@@ -14,12 +14,12 @@ namespace REST_polynomials
     {
         public string Evaluate(string value)
         {
-            return new PolinomManipulator().Evaluate(value);
+            return new PolinomManipulator().startPolinomEvaluation(value);
         }
 
         public string Generate(string minutes)
         {
-            return new PolinomManipulator().Generate(minutes);
+            return new PolinomManipulator().startPolinomGeneration(minutes);
         }
     }
 }

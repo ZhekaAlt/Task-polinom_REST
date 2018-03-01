@@ -108,8 +108,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Helpers\" />
-    <Folder Include="Interfaces\" />
     <Folder Include="ServiceImpl\" />
   </ItemGroup>
   <ItemGroup>

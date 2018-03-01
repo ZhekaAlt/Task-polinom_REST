@@ -12,7 +12,7 @@ namespace REST_polynomials
     {       
         private FileLayer _data;
 
-        private Thread generationThread, evaluationThread;
+        private static Thread generationThread, evaluationThread;
 
         public PolinomManipulator()
         {
@@ -21,19 +21,44 @@ namespace REST_polynomials
 
         public string startPolinomGeneration(string minutes)
         {
-            if (generationThread.ThreadState == ThreadState.Running)
+            if (generationThread!=null && generationThread.IsAlive)
                 return "Generation is in progress. Please wait...";
-
-            generationThread = new Thread(Generate);
-            generationThread.Start();
-        }
-
-        public string Generate(string minutes)
-        {
-            int membersCount = new Random().Next(0, 11);
 
             int duration = 0;
             int.TryParse(minutes, out duration);
+
+            generationThread = new Thread(()=>Generate(duration));
+            generationThread.Start();
+
+            return string.Format("You called Generation service method for {0} minutes", minutes);
+        }
+
+        public string startPolinomEvaluation(string strValue)
+        {
+            if (evaluationThread != null && evaluationThread.IsAlive)
+                return "Evasluation is in progress. Please wait...";
+
+            double value;
+
+            if (!double.TryParse(strValue, out value))
+            {
+                return "Error! Incorrect value passed. Value should be valid double.";
+            }
+            string retVal="";
+
+            evaluationThread = new Thread(()=>{ retVal = Evaluate(value); });
+            evaluationThread.Start();
+            evaluationThread.Join();
+
+            return retVal;
+        }
+
+        public void Generate(int minutes)
+        {          
+            var timerThread = new Thread(() => MyTimer(minutes));
+            timerThread.Start();
+
+            int membersCount = new Random().Next(0, 11);
 
             string result;
 
@@ -56,25 +81,13 @@ namespace REST_polynomials
 
             result = "Generated polinom: " + polinom.ToString();
 
-            _data.SaveAsTxt(polinom);
+            timerThread.Join();
 
-            return string.Format("You called Generation service method on {0} minutes...{1}{2}", minutes, Environment.NewLine, result);
+            _data.SaveAsTxt(polinom);                       
         }
 
-        public string polinomGeneration(string minutes)
-        {
-
-        }
-
-        public string Evaluate(string strValue)
-        {
-            double value;
-
-            if (!double.TryParse(strValue, out value))
-            {
-               return "Error! Incorrect value passed. Value should be valid double.";
-            }
-
+        public string Evaluate(double value)
+        {            
             var polinoms = _data.GetDataFromFileStorage();
 
             if (polinoms.Count == 0)
@@ -102,7 +115,14 @@ namespace REST_polynomials
             return result;
         }
 
-
-      
+        private void MyTimer(int minutes)
+        {
+            int sec = 60 * minutes;
+            while (sec > 0)
+            {
+                Thread.Sleep(1000);
+                sec--;
+            }
+        }
     }
 }
