@@ -7,9 +7,10 @@ using System.Web;
 
 namespace REST_polynomials.DataLayer
 {
+    //provides methods for save and read data from files
     public class FileLayer
     {
-        private string pathDir;
+        private string pathDir; 
 
         private string fileName;
 

@@ -8,6 +8,7 @@ using System.Threading;
 
 namespace REST_polynomials
 {
+    
     public class PolinomManipulator
     {       
         private FileLayer _data;
